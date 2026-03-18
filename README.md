@@ -1,4 +1,4 @@
-# GroundBnB Backend
+# GroundBnB
 
 ## Overview
 
