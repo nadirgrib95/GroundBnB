@@ -1,2 +1,10 @@
-package com.groundbnb.repository;public interface ReviewRepository {
+package com.groundbnb.repository;
+
+import com.groundbnb.entity.Review;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+    List<Review> findByListingId(Integer listingId);
 }

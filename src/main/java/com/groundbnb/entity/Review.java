@@ -7,55 +7,50 @@ import jakarta.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private double rating;
-    private String comment;
-    private long listingId;
-    private long customerId;
-    private long reservationId;
+    private Integer reviewId;
 
+    @Column(nullable = false)
+    private Integer rating;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String comment;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "listing_id")
+    private Listing listing;
+
+    @OneToOne
+    @JoinColumn(name = "reservation_id", unique = true)
+    private Reservation reservation;
 
     public Review() {
     }
 
-    public Review(long id, double rating, String comment, long listingId, long customerId, long reservationId) {
-        this.id = id;
+    public Review(Integer rating, String comment, Customer customer, Listing listing, Reservation reservation) {
         this.rating = rating;
         this.comment = comment;
-        this.listingId = listingId;
-        this.customerId = customerId;
-        this.reservationId = reservationId;
+        this.customer = customer;
+        this.listing = listing;
+        this.reservation = reservation;
     }
 
-    public long getId() {
-        return id;
+    public Integer getReviewId() {
+        return reviewId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setReviewId(Integer reviewId) {
+        this.reviewId = reviewId;
     }
 
-    public long getListingId() {
-        return listingId;
-    }
-
-    public void setListingId(long listingId) {
-        this.listingId = listingId;
-    }
-
-    public long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(long customerId) {
-        this.customerId = customerId;
-    }
-
-    public double getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
@@ -67,4 +62,27 @@ public class Review {
         this.comment = comment;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Listing getListing() {
+        return listing;
+    }
+
+    public void setListing(Listing listing) {
+        this.listing = listing;
+    }
+
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
 }
