@@ -11,7 +11,7 @@ import java.util.Date;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer reservationId;
+    private Long id;
 
     @Column(nullable = false)
     private LocalDate checkInDate;
@@ -39,8 +39,8 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Integer reservationId, LocalDate checkInDate, LocalDate checkOutDate, Integer guestCount, BigDecimal totalPrice, Customer customer, Listing listing, Review review) {
-        this.reservationId = reservationId;
+    public Reservation(Long id, LocalDate checkInDate, LocalDate checkOutDate, Integer guestCount, BigDecimal totalPrice, Customer customer, Listing listing, Review review) {
+        this.id = id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.guestCount = guestCount;
@@ -50,12 +50,12 @@ public class Reservation {
         this.review = review;
     }
 
-    public Integer getReservationId() {
-        return reservationId;
+    public Long getId() {
+        return id;
     }
 
-    public void setReservationId(Integer reservationId) {
-        this.reservationId = reservationId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getCheckInDate() {

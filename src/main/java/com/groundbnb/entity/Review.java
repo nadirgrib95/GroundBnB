@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer reviewId;
+    private Long id;
 
     @Column(nullable = false)
     private Integer rating;
@@ -30,7 +30,8 @@ public class Review {
     public Review() {
     }
 
-    public Review(Integer rating, String comment, Customer customer, Listing listing, Reservation reservation) {
+    public Review(Long id, Integer rating, String comment, Customer customer, Listing listing, Reservation reservation) {
+        this.id = id;
         this.rating = rating;
         this.comment = comment;
         this.customer = customer;
@@ -38,12 +39,12 @@ public class Review {
         this.reservation = reservation;
     }
 
-    public Integer getReviewId() {
-        return reviewId;
+    public Long getId() {
+        return id;
     }
 
-    public void setReviewId(Integer reviewId) {
-        this.reviewId = reviewId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Integer getRating() {

@@ -10,7 +10,7 @@ import java.util.List;
 public class Listing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer listingId;
+    private Long id;
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -52,8 +52,8 @@ public class Listing {
     public Listing() {
     }
 
-    public Listing(Integer listingId, String title, String description, BigDecimal price, String address, String city, String state, String zipCode, String country, String mainImageUrl) {
-        this.listingId = listingId;
+    public Listing(Long id, String title, String description, BigDecimal price, String address, String city, String state, String zipCode, String country, String mainImageUrl) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -65,12 +65,12 @@ public class Listing {
         this.mainImageUrl = mainImageUrl;
     }
 
-    public Integer getListingId() {
-        return listingId;
+    public Long getId() {
+        return id;
     }
 
-    public void setListingId(Integer listingId) {
-        this.listingId = listingId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

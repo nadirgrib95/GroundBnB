@@ -9,7 +9,7 @@ import java.util.List;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer customerId;
+    private Long id;
 
     @Column(nullable = false, length = 50)
     private String firstName;
@@ -32,20 +32,20 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(int customerId, String firstName, String lastName, String email, String password) {
-        this.customerId = customerId;
+    public Customer(Long id, String firstName, String lastName, String email, String password) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
 
-    public Integer getCustomerId() {
-        return customerId;
+    public Long getId() {
+        return id;
     }
 
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
