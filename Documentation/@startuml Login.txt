@@ -1,0 +1,43 @@
+@startuml Login
+actor User
+participant "Angular Frontend" as FE
+participant "CustomerController" as Controller
+participant "CustomerService" as Service
+participant "CustomerRepository" as Repo
+participant "PasswordEncoder" as Encoder
+participant "JwtUtils" as JWT
+database "MySQL DB" as DB
+
+User -> FE : Enter email & password
+FE -> Controller : POST /api/customers/login
+
+Controller -> Service : authenticate(email, password)
+
+Service -> Repo : findByEmail(email)
+Repo -> DB : SELECT customer
+DB --> Repo : customer
+Repo --> Service : customer
+
+alt User not found
+    Service --> Controller : error
+    Controller --> FE : 401 Unauthorized
+
+else User exists
+    Service -> Encoder : match(password, hashedPassword)
+
+    alt Password invalid
+        Service --> Controller : error
+        Controller --> FE : 401 Unauthorized
+    else Password valid
+        Service -> JWT : generateToken(user)
+        JWT --> Service : JWT token
+
+        Service --> Controller : token
+        Controller --> FE : 200 OK (token)
+    end
+end
+
+FE -> FE : Store JWT (localStorage)
+
+FE --> User : Logged in
+@enduml

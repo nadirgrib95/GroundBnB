@@ -1,0 +1,37 @@
+@startuml SignUp
+actor User
+participant "Angular Frontend" as FE
+participant "CustomerController" as Controller
+participant "CustomerService" as Service
+participant "CustomerRepository" as Repo
+database "MySQL DB" as DB
+participant "PasswordEncoder" as Encoder
+
+User -> FE : Fill signup form
+FE -> Controller : POST /api/customers/signup (data)
+
+Controller -> Service : registerCustomer(dto)
+
+Service -> Repo : findByEmail(email)
+Repo -> DB : SELECT customer
+DB --> Repo : result
+Repo --> Service : exists / not exists
+
+alt Email already exists
+    Service --> Controller : throw error
+    Controller --> FE : 400 Bad Request
+else New user
+    Service -> Encoder : hash(password)
+    Encoder --> Service : hashed password
+
+    Service -> Repo : save(customer)
+    Repo -> DB : INSERT customer
+    DB --> Repo : saved
+    Repo --> Service : customer
+
+    Service --> Controller : success
+    Controller --> FE : 200 OK
+end
+
+FE --> User : Signup result
+@enduml
