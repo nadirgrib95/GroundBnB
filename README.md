@@ -168,9 +168,7 @@ Authorization: Bearer <your_token>
 ## Future Improvements
 
 * Image upload for listings
-* Pagination and filtering
 * Role-based access control (admin/customer)
-* Payment integration
 * Caching for performance optimization
 
 ---
