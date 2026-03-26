@@ -22,11 +22,12 @@ public class CustomerService {
             throw new IllegalArgumentException("Email already in use");
         }
 
-        Customer customer = new Customer();
-        customer.setFirstName(dto.getFirstName());
-        customer.setLastName(dto.getLastName());
-        customer.setEmail(dto.getEmail());
-        customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        Customer customer = new Customer(
+            dto.getFirstName(),
+            dto.getLastName(),
+            dto.getEmail(),
+            passwordEncoder.encode(dto.getPassword())
+        );
 
         return customerRepository.save(customer);
     }

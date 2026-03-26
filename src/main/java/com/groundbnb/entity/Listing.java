@@ -1,21 +1,37 @@
 package com.groundbnb.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
-@Table(name="listing")
+@Table(name = "listing")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Listing {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "listing_id")
     private Long id;
+
+    @Column(name = "public_id", unique = true, nullable = false, updatable = false, length = 75)
+    private String publicId;
 
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 500)
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -30,30 +46,29 @@ public class Listing {
     @Column(nullable = false, length = 100)
     private String state;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "zip_code", nullable = false, length = 20)
     private String zipCode;
 
     @Column(nullable = false, length = 100)
     private String country;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "main_image_url", nullable = false, length = 500)
     private String mainImageUrl;
 
-    private Float avgRating;
+    @Column(name = "avg_rating")
+    private Double avgRating;
 
+    @Column(name = "review_count")
     private Integer reviewCount;
 
-    @OneToMany(mappedBy = "listing")
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations;
 
-    @OneToMany(mappedBy = "listing")
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
-    public Listing() {
-    }
-
-    public Listing(Long id, String title, String description, BigDecimal price, String address, String city, String state, String zipCode, String country, String mainImageUrl) {
-        this.id = id;
+    public Listing(String title, String description, BigDecimal price, String address,
+                   String city, String state, String zipCode, String country, String mainImageUrl) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -63,117 +78,73 @@ public class Listing {
         this.zipCode = zipCode;
         this.country = country;
         this.mainImageUrl = mainImageUrl;
+        this.publicId = generatePublicId();
+        this.reviewCount = 0;
+        this.avgRating = 0.0;
     }
 
-    public Long getId() {
-        return id;
+    private String generatePublicId() {
+        return "lst-" + UUID.randomUUID();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // Helper methods
+    public String getFullAddress() {
+        return String.format("%s, %s, %s %s, %s",
+                address, city, state, zipCode, country);
     }
 
-    public String getTitle() {
-        return title;
+    public String getShortAddress() {
+        return String.format("%s, %s", city, country);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void updateRating() {
+        if (reviews != null && !reviews.isEmpty()) {
+            double sum = reviews.stream()
+                    .mapToDouble(Review::getRating)
+                    .sum();
+            this.avgRating = sum / reviews.size();
+            this.reviewCount = reviews.size();
+        } else {
+            this.avgRating = 0.0;
+            this.reviewCount = 0;
+        }
     }
 
-    public String getDescription() {
-        return description;
+    public void addReview(Review review) {
+        if (reviews == null) {
+            reviews = new java.util.ArrayList<>();
+        }
+        reviews.add(review);
+        updateRating();
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void removeReview(Review review) {
+        if (reviews != null) {
+            reviews.remove(review);
+            updateRating();
+        }
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public boolean isAvailable() {
+        if (reservations == null || reservations.isEmpty()) {
+            return true;
+        }
+
+        return reservations.stream().noneMatch(Reservation::isActive);
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public BigDecimal calculateTotalPrice(int nights) {
+        return price.multiply(BigDecimal.valueOf(nights));
     }
 
-    public String getAddress() {
-        return address;
+    public String getFormattedPrice() {
+        return String.format("$%.2f", price);
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getMainImageUrl() {
-        return mainImageUrl;
-    }
-
-    public void setMainImageUrl(String mainImageUrl) {
-        this.mainImageUrl = mainImageUrl;
-    }
-
-    public Float getAvgRating() {
-        return avgRating;
-    }
-
-    public void setAvgRating(Float avgRating) {
-        this.avgRating = avgRating;
-    }
-
-    public Integer getReviewCount() {
-        return reviewCount;
-    }
-
-    public void setReviewCount(Integer reviewCount) {
-        this.reviewCount = reviewCount;
-    }
-
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public String getFormattedRating() {
+        if (reviewCount == null || reviewCount == 0) {
+            return "No reviews yet";
+        }
+        return String.format("%.1f (%d reviews)", avgRating, reviewCount);
     }
 }

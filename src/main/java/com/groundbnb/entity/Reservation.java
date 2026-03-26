@@ -1,16 +1,20 @@
 package com.groundbnb.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
+@Getter
+@Setter
 @Entity
 @Table(name="reservation")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reservation_id")
     private Long id;
 
     @Column(nullable = false)
@@ -50,67 +54,7 @@ public class Reservation {
         this.review = review;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getCheckInDate() {
-        return checkInDate;
-    }
-
-    public void setCheckInDate(LocalDate checkInDate) {
-        this.checkInDate = checkInDate;
-    }
-
-    public LocalDate getCheckOutDate() {
-        return checkOutDate;
-    }
-
-    public void setCheckOutDate(LocalDate checkOutDate) {
-        this.checkOutDate = checkOutDate;
-    }
-
-    public Integer getGuestCount() {
-        return guestCount;
-    }
-
-    public void setGuestCount(Integer guestCount) {
-        this.guestCount = guestCount;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Listing getListing() {
-        return listing;
-    }
-
-    public void setListing(Listing listing) {
-        this.listing = listing;
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
-    public void setReview(Review review) {
-        this.review = review;
+    public boolean isActive() {
+        return checkInDate.isBefore(LocalDate.now()) && checkOutDate.isAfter(LocalDate.now());
     }
 }
